@@ -1,7 +1,7 @@
 import {Icon, IconsEnum} from 'assets/icons';
 import {Button, Header} from 'components';
 import {ListItem} from 'components/listItem';
-import React, {useEffect, useState} from 'react';
+import React, {createRef, useEffect, useState} from 'react';
 import {
   Platform,
   SafeAreaView,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {initialFees, paymentType} from './constants';
 import {FeeItem} from './feeItem';
-import {PaymentTypeEnum} from './models';
+import {CreditCardModel, PaymentTypeEnum} from './models';
 import {getFees} from 'services';
 import {FeeListModel} from 'services/model';
 import {appPadding, normalize} from 'utils/constants';
@@ -20,6 +20,7 @@ import {titleTextStyle} from 'utils/typography';
 import {ShoppingCard} from './shoppingCard';
 import {CreaditCard} from 'screens/checkOut/creditCard';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {FormikProps} from 'formik';
 const scrollHeight = Platform.select({
   ios: 15,
   android: -64,
@@ -27,11 +28,21 @@ const scrollHeight = Platform.select({
 const CheckOut = () => {
   const [fees, setFees] = useState<FeeListModel>(initialFees);
   const [checkItem, setCheckItem] = useState<PaymentTypeEnum>();
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+  const formikRef = createRef<FormikProps<CreditCardModel>>();
   useEffect(() => {
     getFees().then(result => {
       setFees(result);
     });
   }, []);
+  const onComplete = (status: boolean) => {
+    if (status === buttonDisabled) {
+      setButtonDisabled(!buttonDisabled);
+    }
+  };
+  const buyNowAction = () => {
+    console.log(`getCredit Card Values`, formikRef.current?.values);
+  };
 
   return (
     <SafeAreaView style={styles.root}>
@@ -61,7 +72,10 @@ const CheckOut = () => {
             </View>
           }
         />
-        <CreaditCard />
+        {checkItem === PaymentTypeEnum.creditCard && (
+          <CreaditCard onComplete={onComplete} ref={formikRef} />
+        )}
+
         <ListItem
           isCheck={checkItem === PaymentTypeEnum.cashOnDelivery}
           item={paymentType[1]}
@@ -90,7 +104,7 @@ const CheckOut = () => {
         <Text style={titleTextStyle}>Total</Text>
         <Text style={titleTextStyle}>{fees?.total}</Text>
       </View>
-      <Button />
+      <Button disabled={buttonDisabled} onPress={buyNowAction} />
     </SafeAreaView>
   );
 };
