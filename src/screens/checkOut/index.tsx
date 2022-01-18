@@ -1,26 +1,19 @@
 import {Icon, IconsEnum} from 'assets/icons';
 import {Button, Header} from 'components';
 import {ListItem} from 'components/listItem';
+import {FormikProps} from 'formik';
 import React, {createRef, useEffect, useState} from 'react';
-import {
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import {initialFees, paymentType} from './constants';
-import {FeeItem} from './feeItem';
-import {CreditCardModel, PaymentTypeEnum} from './models';
+import {Platform, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {CreaditCard} from 'screens/checkOut/creditCard';
 import {getFees} from 'services';
 import {FeeListModel} from 'services/model';
 import {appPadding, normalize} from 'utils/constants';
 import {titleTextStyle} from 'utils/typography';
+import {initialFees, paymentType} from './constants';
+import {FeeItem} from './feeItem';
+import {CreditCardModel, PaymentTypeEnum} from './models';
 import {ShoppingCard} from './shoppingCard';
-import {CreaditCard} from 'screens/checkOut/creditCard';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {FormikProps} from 'formik';
 const scrollHeight = Platform.select({
   ios: 15,
   android: -64,

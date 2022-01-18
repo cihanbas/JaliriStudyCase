@@ -1,7 +1,8 @@
 import {Icon, IconsEnum} from 'assets/icons';
 import {MaskedInput} from 'components/maskedInput';
 import {Formik, FormikErrors, FormikProps} from 'formik';
-import React, {forwardRef, useRef} from 'react';
+import _ from 'lodash';
+import React, {forwardRef} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {
   CreditCardValidationScheme,
@@ -10,9 +11,11 @@ import {
 import {CreditCardModel} from 'screens/checkOut/models';
 import {appPadding, colors} from 'utils/constants';
 import {inputErrorTextStyle} from 'utils/typography';
-import _ from 'lodash';
 const CreaditCard = forwardRef(
-  ({onComplete}: {onComplete: (status: boolean) => void}, formikRef) => {
+  (
+    {onComplete}: {onComplete: (status: boolean) => void},
+    formikRef: React.ForwardedRef<FormikProps<CreditCardModel>>,
+  ) => {
     const cardNumberRef = React.createRef<TextInput>();
     const cardDateRef = React.createRef<TextInput>();
     const cvcRef = React.createRef<TextInput>();

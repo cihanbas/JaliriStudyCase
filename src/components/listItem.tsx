@@ -1,9 +1,8 @@
-import {Icon, IconsEnum} from 'assets/icons';
-import React, {useState} from 'react';
+import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {PaymentTypeEnum, PaymentTypeModel} from 'screens/checkOut/models';
 import {appPadding, colors, normalize} from 'utils/constants';
-import {pTextStyle, subTextStyle, titleTextStyle} from 'utils/typography';
+import {subTextStyle, titleTextStyle} from 'utils/typography';
 type ListITemModel = {
   item: PaymentTypeModel;
   onChange: (value: PaymentTypeEnum) => void;
