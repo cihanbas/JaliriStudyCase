@@ -1,19 +1,11 @@
-import React, {Ref} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TextInputProps,
-  View,
-  ViewProps,
-} from 'react-native';
+import React from 'react';
+import {StyleSheet, Text, TextInput, TextInputProps, View} from 'react-native';
 import {MaskedTextInput} from 'react-native-mask-text';
 import {colors} from 'utils/constants';
 import {inputErrorTextStyle} from 'utils/typography';
 interface InputProps extends TextInputProps {
   showIcon?: boolean;
   errorText?: string;
-  style?: ViewProps;
   title?: string;
   mask: string;
   textLength: number;
@@ -22,6 +14,11 @@ interface InputProps extends TextInputProps {
 }
 export const MaskedInput = React.forwardRef(
   (props: InputProps, ref: React.Ref<TextInput>) => {
+    const onChange = (text: string, rawText: string) => {
+      if (rawText.length <= props.textLength) {
+        props.handleChange(text, rawText);
+      }
+    };
     return (
       <View style={props.style || styles.container}>
         <MaskedTextInput
@@ -29,11 +26,7 @@ export const MaskedInput = React.forwardRef(
           ref={ref}
           style={styles.input}
           mask={props.mask}
-          onChangeText={(text, rawText) => {
-            if (rawText.length <= props.textLength) {
-              props.handleChange(text, rawText);
-            }
-          }}
+          onChangeText={onChange}
           placeholderTextColor={colors.gray}
         />
         {typeof props.errorText === 'string' && (
