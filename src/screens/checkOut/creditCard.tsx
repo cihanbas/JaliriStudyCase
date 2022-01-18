@@ -1,9 +1,8 @@
-import {color} from 'app/theme';
 import {Icon, IconsEnum} from 'assets/icons';
 import {MaskedInput} from 'components/maskedInput';
 import {Formik, FormikErrors, FormikProps} from 'formik';
 import React, {useRef} from 'react';
-import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {
   CreditCardValidationScheme,
   maskedViewRawtext,
@@ -11,13 +10,13 @@ import {
 import {CreditCardModel} from 'screens/checkOut/models';
 import {appPadding, colors} from 'utils/constants';
 import {inputErrorTextStyle} from 'utils/typography';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const CreaditCard = () => {
   const formikRef = useRef<FormikProps<CreditCardModel>>(null);
   const cardNumberRef = React.createRef<TextInput>();
   const cardDateRef = React.createRef<TextInput>();
   const cvcRef = React.createRef<TextInput>();
+  const nameRef = React.createRef<TextInput>();
   return (
     <View style={styles.container}>
       <Formik
@@ -30,7 +29,7 @@ const CreaditCard = () => {
         innerRef={formikRef}
         validationSchema={CreditCardValidationScheme}
         onSubmit={values => console.log(values)}>
-        {({values, errors, handleChange, handleSubmit, handleBlur}) => {
+        {({values, errors, handleChange}) => {
           return (
             <View style={styles.inputsContainer}>
               <View style={styles.creditCardContainer}>
@@ -41,6 +40,7 @@ const CreaditCard = () => {
                 />
                 <MaskedInput
                   autoCapitalize="none"
+                  autoFocus={true}
                   ref={cardNumberRef}
                   handleChange={(text, rawText) => {
                     formikRef.current?.setFieldValue('cardNumber', text);
@@ -49,17 +49,17 @@ const CreaditCard = () => {
                       cardDateRef.current?.focus();
                     }
                   }}
-                  autoFocus={true}
                   textLength={16}
                   value={values.cardNumber}
                   placeholder="4242 4242 4242 24242"
                   keyboardType="numeric"
                   maxLength={19}
                   mask="9999 9999 9999 9999"
-                  style={{flex: 4, paddingLeft: 5}}
+                  style={styles.cardNumberInput}
                 />
                 <MaskedInput
                   ref={cardDateRef}
+                  autoFocus={false}
                   autoCapitalize="none"
                   handleChange={(text, rawText) => {
                     formikRef.current?.setFieldValue('cardDate', text);
@@ -82,7 +82,10 @@ const CreaditCard = () => {
                   autoCapitalize="none"
                   handleChange={(text, rawText) => {
                     formikRef.current?.setFieldValue('cvc', text);
-                    if (rawText.length === 0) {
+                    if (rawText.length === 3) {
+                      nameRef.current?.focus();
+                    }
+                    if (rawText.length === 0 && cvcRef.current?.isFocused()) {
                       cardDateRef.current?.focus();
                     }
                   }}
@@ -95,6 +98,7 @@ const CreaditCard = () => {
                 />
               </View>
               <TextInput
+                ref={nameRef}
                 autoCapitalize="none"
                 value={values.cardHolderName}
                 onChangeText={handleChange('cardHolderName')}
@@ -135,5 +139,9 @@ const styles = StyleSheet.create({
     paddingBottom: appPadding / 2,
     borderBottomColor: colors.gray,
     borderBottomWidth: 1,
+  },
+  cardNumberInput: {
+    flex: 4,
+    paddingLeft: 6,
   },
 });
